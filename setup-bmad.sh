@@ -134,69 +134,60 @@ download_file() {
 download_directory() {
     local dir_path="$1"
     
-    # Try GitHub API first, with fallback to hardcoded list
-    local tree_url="https://api.github.com/repos/$GITHUB_REPO/git/trees/$GITHUB_BRANCH?recursive=1"
-    local tree_data=""
+    # Use GitHub REST API with curl (no additional dependencies)
+    local temp_file=$(mktemp)
     local api_success=false
     
-    # Show spinner while fetching file list
     echo -ne "  ${PURPLE}◐${NC} Fetching file list from GitHub..."
     
-    # Attempt to get tree data from GitHub API with timeout
+    # Get tree data from GitHub REST API
+    local tree_url="https://api.github.com/repos/$GITHUB_REPO/git/trees/$GITHUB_BRANCH?recursive=1"
+    local tree_data=""
+    
     if command -v curl >/dev/null 2>&1; then
-        (
-            tree_data=$(curl -fsSL --max-time 10 "$tree_url" 2>/dev/null)
-            echo "$tree_data" > /tmp/bmad_tree_data.tmp
-            echo $? > /tmp/bmad_curl_status.tmp
-        ) &
-        local fetch_pid=$!
+        # Disable exit on error for curl command
+        set +e
+        tree_data=$(curl -fsSL --max-time 10 "$tree_url" 2>/dev/null)
+        local curl_status=$?
+        set -e
         
-        # Show spinner while fetching
-        local spinstr='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
-        while kill -0 $fetch_pid 2>/dev/null; do
-            local temp=${spinstr#?}
-            printf "\r  [${CYAN}%c${NC}] Fetching file list from GitHub..." "$spinstr"
-            local spinstr=$temp${spinstr%"$temp"}
-            sleep 0.1
-        done
-        
-        wait $fetch_pid
-        local curl_status=$(cat /tmp/bmad_curl_status.tmp 2>/dev/null || echo 1)
-        tree_data=$(cat /tmp/bmad_tree_data.tmp 2>/dev/null || echo "")
-        rm -f /tmp/bmad_tree_data.tmp /tmp/bmad_curl_status.tmp
-        
-        if [[ $curl_status -eq 0 && "$tree_data" != *"\"message\":"* && -n "$tree_data" ]]; then
-            api_success=true
-            printf "\r  ${CYAN}✔${NC} File list retrieved successfully    \n"
+        if [[ $curl_status -eq 0 && -n "$tree_data" && "$tree_data" != *"\"message\":"* ]]; then
+            # Parse JSON to extract blob file paths and sort by directory
+            # Use set +e to prevent script exit if parsing fails
+            set +e
+            echo "$tree_data" | grep -B2 '"type": *"blob"' | grep '"path":' | \
+            sed 's/.*"path": *"\([^"]*\)".*/\1/' | \
+            grep "^$dir_path/" | \
+            sort > "$temp_file"
+            set -e
+            
+            if [[ -s "$temp_file" ]]; then
+                api_success=true
+                printf "\r  ${CYAN}✔${NC} File list retrieved successfully    \n"
+            else
+                printf "\r  ${RED}✗${NC} No files found for $dir_path       \n"
+            fi
         else
-            printf "\r  ${RED}✗${NC} GitHub API unavailable              \n"
+            if [[ "$tree_data" == *"rate limit"* ]] || [[ "$tree_data" == *"403"* ]]; then
+                printf "\r  ${RED}✗${NC} GitHub API rate limit reached      \n"
+            else
+                printf "\r  ${RED}✗${NC} GitHub API request failed          \n"
+            fi
         fi
-    elif command -v wget >/dev/null 2>&1; then
-        tree_data=$(wget -qO- --timeout=10 "$tree_url" 2>/dev/null)
-        if [[ $? -eq 0 && "$tree_data" != *"\"message\":"* && -n "$tree_data" ]]; then
-            api_success=true
-        fi
+    else
+        printf "\r  ${RED}✗${NC} curl not available                 \n"
     fi
     
-    
     if [[ "$api_success" == true ]]; then
-        # Use API data - avoid subshell by using temp file
-        local temp_file=$(mktemp)
-        # Extract only files (blobs) paths from JSON, not directories (trees)
-        # The GitHub API returns objects like: {"path": "file.txt", "mode": "100644", "type": "blob", ...}
-        # We need to extract path only when type is blob
-        echo "$tree_data" | jq -r '.tree[] | select(.type == "blob") | .path' 2>/dev/null > "$temp_file" || \
-        echo "$tree_data" | grep -B2 '"type": *"blob"' | grep '"path":' | sed 's/.*"path": *"\([^"]*\)".*/\1/' > "$temp_file"
-        
         # Count total files and group by directory
         local total_files=0
         local current_files=0
         declare -A dir_files
         
         while IFS= read -r file_path; do
-            # We already filtered for blobs only, so just check if it's under our directory
+            # Files are already filtered by directory and are blobs only
             # Skip node_modules and other build artifacts
-            if [[ "$file_path" == "$dir_path"/* ]] && [[ "$file_path" != */node_modules/* ]] && [[ "$file_path" != */.next/* ]]; then
+            if [[ "$file_path" != */node_modules/* ]] && [[ "$file_path" != */.next/* ]]; then
                 total_files=$((total_files + 1))
                 local file_dir=$(dirname "$file_path")
                 dir_files["$file_dir"]=$((${dir_files["$file_dir"]:-0} + 1))
@@ -213,9 +204,9 @@ download_directory() {
         declare -A failed_files
         
         while IFS= read -r file_path; do
-            # We already filtered for blobs only, so just check if it's under our directory
+            # Files are already filtered by directory and are blobs only
             # Skip node_modules and other build artifacts
-            if [[ "$file_path" == "$dir_path"/* ]] && [[ "$file_path" != */node_modules/* ]] && [[ "$file_path" != */.next/* ]]; then
+            if [[ "$file_path" != */node_modules/* ]] && [[ "$file_path" != */.next/* ]]; then
                 local file_dir=$(dirname "$file_path")
                 
                 # Check if we're entering a new directory
@@ -246,8 +237,8 @@ download_directory() {
                     # Track failed downloads
                     dir_failed=$((dir_failed + 1))
                     failed_files["$file_path"]=1
-                    # Debug: log which file failed
-                    echo -e "\n      ${RED}DEBUG: Failed to download: $file_path${NC}" >&2
+                    # Debug: log which file failed  
+                    echo -e "\n      ${RED}⚠ Failed: $file_path${NC}" >&2
                 fi
                 
                 # Show progress bar for current directory with rotating colors
@@ -273,9 +264,15 @@ download_directory() {
         
         rm -f "$temp_file"
     else
-        # Fallback: Use hardcoded file list
-        echo -e "    ${RED}⚠️  GitHub API unavailable, using fallback file list${NC}"
-        download_bmad_fallback
+        # API failed - provide manual download instructions
+        echo ""
+        echo -e "    ${RED}❌ GitHub API failed for $dir_path${NC}"
+        echo -e "    ${CYAN}📋 Manual Download Required:${NC}"
+        echo -e "    1. Visit: ${CYAN}https://github.com/$GITHUB_REPO${NC}"
+        echo -e "    2. Download the ${CYAN}$dir_path/${NC} folder manually"
+        echo -e "    3. Extract to your current directory"
+        echo ""
+        return 1
     fi
 }
 
@@ -298,7 +295,7 @@ download_file_silent() {
     if command -v curl >/dev/null 2>&1; then
         # Try downloading with curl, capture error for debugging
         local error_output=$(mktemp)
-        if ! curl -fsSL "$file_url" -o "$target_file" 2>"$error_output"; then
+        if ! curl -fsSL --max-time 30 "$file_url" -o "$target_file" 2>"$error_output"; then
             status=$?
             # Debug: show actual error
             if [[ -s "$error_output" ]]; then
@@ -310,7 +307,7 @@ download_file_silent() {
         rm -f "$error_output"
     else
         # Try with wget
-        if ! wget -q "$file_url" -O "$target_file" 2>/dev/null; then
+        if ! wget -q --timeout=30 "$file_url" -O "$target_file" 2>/dev/null; then
             status=$?
             # If download failed, remove any partial file
             rm -f "$target_file" 2>/dev/null
@@ -396,127 +393,6 @@ download_and_show_file() {
     echo -e "    ${file_icon} Downloaded: ${CYAN}$display_file${NC}"
 }
 
-download_bmad_fallback() {
-    # Hardcoded list of known bmad-agent files (current as of latest commit)
-    local files=(
-        "bmad-agent/checklists/api-design-checklist.md"
-        "bmad-agent/checklists/architect-checklist.md"
-        "bmad-agent/checklists/change-checklist.md"
-        "bmad-agent/checklists/debug-process-checklist.md"
-        "bmad-agent/checklists/deployment-pipeline-checklist.md"
-        "bmad-agent/checklists/frontend-architecture-checklist.md"
-        "bmad-agent/checklists/implementation-quality-checklist.md"
-        "bmad-agent/checklists/pm-checklist.md"
-        "bmad-agent/checklists/po-master-checklist.md"
-        "bmad-agent/checklists/security-threat-model-checklist.md"
-        "bmad-agent/checklists/story-dod-checklist.md"
-        "bmad-agent/checklists/story-draft-checklist.md"
-        "bmad-agent/checklists/test-suite-quality-checklist.md"
-        "bmad-agent/data/bmad-kb.md"
-        "bmad-agent/data/technical-preferences.txt"
-        "bmad-agent/personas/analyst.md"
-        "bmad-agent/personas/architect.md"
-        "bmad-agent/personas/data-engineer.md"
-        "bmad-agent/personas/designer.md"
-        "bmad-agent/personas/developer.md"
-        "bmad-agent/personas/devops.md"
-        "bmad-agent/personas/orchestrator.md"
-        "bmad-agent/personas/pm.md"
-        "bmad-agent/personas/qa.md"
-        "bmad-agent/tasks/checklist-run-task.md"
-        "bmad-agent/tasks/coordinate-multi-persona-feature.md"
-        "bmad-agent/tasks/core-dump.md"
-        "bmad-agent/tasks/correct-course.md"
-        "bmad-agent/tasks/create-api-specification.md"
-        "bmad-agent/tasks/create-architecture.md"
-        "bmad-agent/tasks/create-data-migration-strategy.md"
-        "bmad-agent/tasks/create-database-design.md"
-        "bmad-agent/tasks/create-deep-research.md"
-        "bmad-agent/tasks/create-deployment-pipeline.md"
-        "bmad-agent/tasks/create-frontend-architecture.md"
-        "bmad-agent/tasks/create-next-story.md"
-        "bmad-agent/tasks/create-prd.md"
-        "bmad-agent/tasks/create-test-strategy.md"
-        "bmad-agent/tasks/create-ui-specification.md"
-        "bmad-agent/tasks/debug-issue.md"
-        "bmad-agent/tasks/generate-mvp-dashboard.md"
-        "bmad-agent/tasks/generate-tests.md"
-        "bmad-agent/tasks/implement-story.md"
-        "bmad-agent/tasks/manage-mvp-scope.md"
-        "bmad-agent/tasks/security-threat-model.md"
-        "bmad-agent/templates/architecture-tmpl.md"
-        "bmad-agent/templates/doc-sharding-tmpl.md"
-        "bmad-agent/templates/front-end-architecture-tmpl.md"
-        "bmad-agent/templates/front-end-spec-tmpl.md"
-        "bmad-agent/templates/planning-journal-tmpl.md"
-        "bmad-agent/templates/prd-tmpl.md"
-        "bmad-agent/templates/project-brief-tmpl.md"
-        "bmad-agent/templates/session-state-tmpl.md"
-        "bmad-agent/templates/story-tmpl.md"
-        "bmad-agent/templates/test-strategy-tmpl.md"
-    )
-    
-    # Group files by directory for progress bars
-    declare -A fallback_dir_files
-    local total_fallback_files=${#files[@]}
-    
-    for file_path in "${files[@]}"; do
-        local file_dir=$(dirname "$file_path")
-        fallback_dir_files["$file_dir"]=$((${fallback_dir_files["$file_dir"]:-0} + 1))
-    done
-    
-    # Download with progress bars
-    local current_dir=""
-    local dir_file_count=0
-    local dir_current=0
-    local dir_failed=0
-    local color_index=0
-    local colors=($DARK_ORANGE $CYAN)
-    
-    for file_path in "${files[@]}"; do
-        local file_dir=$(dirname "$file_path")
-        
-        # Check if we're entering a new directory
-        if [[ "$file_dir" != "$current_dir" ]]; then
-            # Add newline if not the first directory
-            if [[ -n "$current_dir" ]]; then
-                echo ""  # Ensure previous progress bar line is complete
-                # Show failed files if any
-                if [[ $dir_failed -gt 0 ]]; then
-                    echo -e "      ${RED}⚠ Failed to download $dir_failed file(s)${NC}"
-                fi
-            fi
-            current_dir="$file_dir"
-            dir_current=0
-            dir_failed=0
-            dir_file_count=${fallback_dir_files["$file_dir"]}
-            echo -e "    ${CYAN}📦${NC} Creating: ${GRAY}${file_dir#./}/${NC}"
-            # Move to next color in rotation
-            color_index=$(( (color_index + 1) % ${#colors[@]} ))
-        fi
-        
-        # Download file silently
-        if download_file_silent "$file_path"; then
-            # Update progress only if download succeeded
-            dir_current=$((dir_current + 1))
-        else
-            # Track failed downloads
-            dir_failed=$((dir_failed + 1))
-        fi
-        
-        # Show progress bar for current directory with rotating colors
-        local bar_color=${colors[$color_index]}
-        show_progress_bar "$dir_current" "$dir_file_count" "      " "$bar_color"
-    done
-    
-    # Ensure final progress bar has a newline and show final failed count
-    if [[ -n "$current_dir" ]]; then
-        echo ""
-        if [[ $dir_failed -gt 0 ]]; then
-            echo -e "      ${RED}⚠ Failed to download $dir_failed file(s)${NC}"
-        fi
-    fi
-}
 
 # Copy or download files
 if [[ "$SOURCE_MODE" == "local" ]]; then
