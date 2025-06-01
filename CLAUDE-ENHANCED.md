@@ -2,133 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Smart API-First Strategy
-
-### Quick Decision Heuristic (5-second rule):
-Skip API search if ALL are true:
-- Task takes <10 lines of code
-- It's a one-time operation  
-- No external service interaction
-- Standard library handles it well
-
-### API Check Triggers:
-ALWAYS check for APIs when:
-- Interacting with external services (GitHub, Cloudflare, Supabase, APIs, DBs)
-- Task involves >20 lines of implementation
-- Dealing with: parsing, scraping, protocols, auth, encryption
-- Building something that feels "standard" or "common"
-
-### Efficient Practices:
-- State decision upfront: "Using GitHub API for this"
-- Batch related checks: "All GitHub operations will use API"
-- Skip justification for obvious cases
-- Reference previous decisions: "Like before, using X API"
-
-### Common API Patterns:
-- Git operations → GitHub/GitLab API or `gh`/`glab` CLI
-- File downloads → Check for official API before curl/wget
-- Data parsing → Check for official SDKs before regex
-- Config management → Check for CLI tools before parsing
-
-### Error Resolution Strategy:
-1. Read the actual error message carefully
-2. Check official docs (not StackOverflow first)
-3. Verify versions/auth/rate limits
-4. Test with minimal example (curl, etc.)
-5. Only then add debug code
-
 ## Project Overview
 
 The BMAD Method (Breakthrough Method of Agile AI-driven Development) is a framework for managing software projects using specialized AI agents. It provides tools, templates, and workflows to orchestrate AI-powered agile development teams.
-
-## Setup Instructions for Using BMAD with Claude Code
-
-To use the BMAD Method in your project with Claude Code:
-
-1. Copy the `bmad-agent` folder to your project root
-2. Copy this `CLAUDE.md` file to your project root (rename from CLAUDE-ENHANCED.md)
-3. Copy `BMAD-CLAUDE-CODE-GUIDE.md` to your project root (optional but recommended)
-4. Create a `docs/` folder in your project root for BMAD artifacts
-5. Create a `docs/.bmad-session/` folder for session management
-
-Your project structure should look like:
-```
-your-project/
-├── CLAUDE.md               # This file (required for Claude Code)
-├── BMAD-CLAUDE-CODE-GUIDE.md  # Quick reference (optional)
-├── bmad-agent/             # BMAD Method assets
-│   ├── templates/          # Enhanced templates for Claude Code
-│   ├── personas/           # Specialized AI agent personas
-│   ├── tasks/
-│   ├── checklists/
-│   └── data/
-├── docs/                   # Your BMAD artifacts will go here
-│   ├── .bmad-session/      # Session continuity files
-│   └── bmad-journal.md     # Planning history
-└── src/                    # Your source code
-```
-
-## Session Management for Multi-Session Planning
-
-### Starting a Session
-
-When a user begins a BMAD session, ALWAYS check for existing context:
-
-1. **Check for session state**: Read `docs/.bmad-session/current-state.md`
-2. **Review planning journal**: Scan recent entries in `docs/bmad-journal.md`
-3. **Offer continuation options**:
-   - "Continue from where we left off"
-   - "Start a new planning phase"
-   - "Review planning progress"
-
-### During Sessions
-
-Maintain continuity by:
-1. **Update session state** after each major decision or phase completion
-2. **Log to planning journal** with structured entries
-3. **Create checkpoints** at natural breaking points
-4. **Track open questions** for future sessions
-
-### Session Commands
-
-- **"Continue BMAD planning"**: Resume from current state
-- **"Show planning status"**: Display overall progress
-- **"What did we decide about X?"**: Search planning journal
-- **"Create planning checkpoint"**: Save current state
-- **"Start fresh session as [role]"**: Begin new phase
-
-### Using Journal for Efficiency
-
-The planning journal helps avoid redundant work:
-- Check journal first to understand current state
-- Skip re-reading completed artifacts (PRD, architecture)
-- Focus on what's changed or blocked
-- Use journal's decision log to avoid re-debating
-
-Quick status check: "What needs attention?" → Claude scans journal for blockers/gaps
-
-### Example Session Patterns
-
-#### First Session
-```
-User: "Let's plan a new app using BMAD"
-Claude: I'll help you start a new BMAD project. Let me set up the planning structure...
-[Creates: docs/bmad-journal.md, docs/.bmad-session/current-state.md]
-Now, let's begin with discovering your vision. Tell me about your app idea.
-```
-
-#### Resuming Session
-```
-User: "Continue BMAD planning"
-Claude: I see we were working on the PRD as the Product Manager. Last session we completed Epic 1 and started defining Epic 2 for task management. 
-
-Current status:
-- Project Brief: ✓ Complete
-- PRD: 60% complete (Epic 2 in progress)
-- Architecture: Not started
-
-Shall we continue defining Epic 2 stories?
-```
 
 ## BMAD Agent Roles for Claude Code
 
@@ -245,6 +121,87 @@ When user says: "Be my SM" or "Generate stories"
 - **"Run [checklist-name] checklist"**: Execute specific checklist
 - **"Validate this [document]"**: Apply appropriate checklist
 - **"Review for completeness"**: Check against templates
+
+Project structure:
+```
+your-project/
+├── CLAUDE.md               # This file (required for Claude Code)
+├── BMAD-CLAUDE-CODE-GUIDE.md  # Quick reference (optional)
+├── bmad-agent/             # BMAD Method assets
+│   ├── templates/          # Enhanced templates for Claude Code
+│   ├── personas/           # Specialized AI agent personas
+│   ├── tasks/
+│   ├── checklists/
+│   └── data/
+├── docs/                   # Your BMAD artifacts will go here
+│   ├── .bmad-session/      # Session continuity files
+│   └── bmad-journal.md     # Planning history
+└── src/                    # Your source code
+```
+
+## Session Management for Multi-Session Planning
+
+### Starting a Session
+
+When a user begins a BMAD session, ALWAYS check for existing context:
+
+1. **Check for session state**: Read `docs/.bmad-session/current-state.md`
+2. **Review planning journal**: Scan recent entries in `docs/bmad-journal.md`
+3. **Offer continuation options**:
+   - "Continue from where we left off"
+   - "Start a new planning phase"
+   - "Review planning progress"
+
+### During Sessions
+
+Maintain continuity by:
+1. **Update session state** after each major decision or phase completion
+2. **Log to planning journal** with structured entries
+3. **Create checkpoints** at natural breaking points
+4. **Track open questions** for future sessions
+
+### Session Commands
+
+- **"Continue BMAD planning"**: Resume from current state
+- **"Show planning status"**: Display overall progress
+- **"What did we decide about X?"**: Search planning journal
+- **"Create planning checkpoint"**: Save current state
+- **"Start fresh session as [role]"**: Begin new phase
+
+### Using Journal for Efficiency
+
+The planning journal helps avoid redundant work:
+- Check journal first to understand current state
+- Skip re-reading completed artifacts (PRD, architecture)
+- Focus on what's changed or blocked
+- Use journal's decision log to avoid re-debating
+
+Quick status check: "What needs attention?" → Claude scans journal for blockers/gaps
+
+### Example Session Patterns
+
+#### First Session
+```
+User: "Let's plan a new app using BMAD"
+Claude: I'll help you start a new BMAD project. Let me set up the planning structure...
+[Creates: docs/bmad-journal.md, docs/.bmad-session/current-state.md]
+Now, let's begin with discovering your vision. Tell me about your app idea.
+```
+
+#### Resuming Session
+```
+User: "Continue BMAD planning"
+Claude: I see we were working on the PRD as the Product Manager. Last session we completed Epic 1 and started defining Epic 2 for task management. 
+
+Current status:
+- Project Brief: ✓ Complete
+- PRD: 60% complete (Epic 2 in progress)
+- Architecture: Not started
+
+Shall we continue defining Epic 2 stories?
+```
+
+
 
 ## High-Level Planning Workflow
 
@@ -573,3 +530,38 @@ Example:
 User: "Act as the BMAD Analyst and investigate this problem"
 Assistant: [Analyst] I'll investigate this problem space thoroughly...
 ```
+
+## Smart API-First Strategy
+
+### Quick Decision Heuristic (5-second rule):
+Skip API search if ALL are true:
+- Task takes <10 lines of code
+- It's a one-time operation  
+- No external service interaction
+- Standard library handles it well
+
+### API Check Triggers:
+ALWAYS check for APIs when:
+- Interacting with external services (GitHub, Cloudflare, Supabase, APIs, DBs)
+- Task involves >20 lines of implementation
+- Dealing with: parsing, scraping, protocols, auth, encryption
+- Building something that feels "standard" or "common"
+
+### Efficient Practices:
+- State decision upfront: "Using GitHub API for this"
+- Batch related checks: "All GitHub operations will use API"
+- Skip justification for obvious cases
+- Reference previous decisions: "Like before, using X API"
+
+### Common API Patterns:
+- Git operations → GitHub/GitLab API or `gh`/`glab` CLI
+- File downloads → Check for official API before curl/wget
+- Data parsing → Check for official SDKs before regex
+- Config management → Check for CLI tools before parsing
+
+### Error Resolution Strategy:
+1. Read the actual error message carefully
+2. Check official docs (not StackOverflow first)
+3. Verify versions/auth/rate limits
+4. Test with minimal example (curl, etc.)
+5. Only then add debug code
