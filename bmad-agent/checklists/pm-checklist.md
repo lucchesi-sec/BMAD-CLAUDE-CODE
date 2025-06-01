@@ -1,8 +1,26 @@
-# Product Manager (PM) Requirements Checklist
+---
+type: checklist
+id: pm-checklist
+title: Product Manager (PM) Requirements Checklist
+purpose: Validate PRD and epic definition quality and completeness for the `create-prd` task
+validates: Product Requirements Document (PRD) and epic definitions
+executed_by: Product Manager
+used_during: create-prd
+phase: discovery
+frequency: Before finalizing PRD and transitioning to architecture design
+categories:
+  - Problem Definition & Context
+  - MVP Scope Definition
+  - User Experience Requirements
+  - Functional Requirements
+  - Non-Functional Requirements
+  - Epic & Story Structure
+  - Technical Guidance
+  - Cross-Functional Requirements
+  - Clarity & Communication
+---
 
-**Purpose**: Validate PRD and epic definition quality and completeness for the `create-prd` task.  
-**Used By**: Product Manager persona during requirements definition  
-**Frequency**: Before finalizing PRD and transitioning to architecture design
+# Product Manager (PM) Requirements Checklist
 
 This checklist serves as a comprehensive framework to ensure the Product Requirements Document (PRD) and Epic definitions are complete, well-structured, and appropriately scoped for MVP development. The Product Manager persona should systematically work through each item during the product definition process.
 

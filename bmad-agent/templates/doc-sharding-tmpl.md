@@ -1,3 +1,14 @@
+---
+type: template
+id: doc-sharding-tmpl
+title: Documentation Organization Template
+created_by: orchestrator
+validates_with: []
+phase: design
+used_in_tasks: []
+produces: documentation-structure
+---
+
 # Documentation Organization: [Project Name]
 
 ## Documentation Structure

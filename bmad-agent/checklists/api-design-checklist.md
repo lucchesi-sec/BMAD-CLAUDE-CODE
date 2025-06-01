@@ -1,8 +1,23 @@
-# API Design Quality Checklist
+---
+type: checklist
+id: api-design-checklist
+title: API Design Quality Checklist
+purpose: Validate API design quality and consistency
+validates: api-specification
+executed_by: architect
+used_during: create-api-specification
+phase: design
+frequency: Before finalizing API specification
+categories:
+  - API Design Fundamentals
+  - API Usability and Developer Experience
+  - Security and Authorization
+  - Performance and Scalability
+  - Documentation and Testing
+  - Operational Readiness
+---
 
-**Purpose**: Validate API design quality and consistency for the `create-api-specification` task.  
-**Used By**: Architect persona during API design  
-**Frequency**: Before finalizing API specification
+# API Design Quality Checklist
 
 ## API Design Fundamentals
 

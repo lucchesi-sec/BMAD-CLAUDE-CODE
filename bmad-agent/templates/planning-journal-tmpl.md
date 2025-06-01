@@ -1,3 +1,14 @@
+---
+type: template
+id: planning-journal-tmpl
+title: Planning Journal Template
+created_by: orchestrator
+validates_with: []
+phase: all
+used_in_tasks: []
+produces: planning-journal
+---
+
 # Planning Journal: [Project Name]
 
 ## Project Overview

@@ -1,3 +1,14 @@
+---
+type: template
+id: prd-tmpl
+title: Product Requirements Document Template
+created_by: pm
+validates_with: [pm-checklist]
+phase: requirements
+used_in_tasks: [create-prd]
+produces: prd
+---
+
 # Product Requirements Document: [Project Name]
 
 ## Executive Summary [discovery-helpful: summary-clarity]

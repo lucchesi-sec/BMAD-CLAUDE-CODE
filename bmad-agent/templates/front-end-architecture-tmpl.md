@@ -1,3 +1,14 @@
+---
+type: template
+id: front-end-architecture-tmpl
+title: Frontend Architecture Template
+created_by: architect
+validates_with: [frontend-architecture-checklist]
+phase: design
+used_in_tasks: [create-frontend-architecture]
+produces: frontend-architecture
+---
+
 # Frontend Architecture: [Project Name]
 
 ## Frontend Overview

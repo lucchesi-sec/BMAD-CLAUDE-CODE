@@ -1,3 +1,14 @@
+---
+type: template
+id: session-state-tmpl
+title: Session State Template
+created_by: orchestrator
+validates_with: []
+phase: all
+used_in_tasks: [core-dump]
+produces: session-state
+---
+
 # Session State: [Project Name]
 
 **Session ID**: [Timestamp or unique identifier]  

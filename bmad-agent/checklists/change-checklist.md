@@ -1,8 +1,23 @@
-# Change Navigation Checklist
+---
+type: checklist
+id: change-checklist
+title: Change Navigation Checklist
+purpose: Guide systematic change analysis and planning for the `correct-course` task
+validates: Change impact analysis and planning
+executed_by: Orchestrator, all personas
+used_during: correct-course
+phase: any
+frequency: When significant changes, pivots, or issues are identified during development
+categories:
+  - Understand the Trigger & Context
+  - Epic Impact Assessment
+  - Artifact Conflict & Impact Analysis
+  - Path Forward Evaluation
+  - Sprint Change Proposal Components
+  - Final Review & Handoff
+---
 
-**Purpose**: Guide systematic change analysis and planning for the `correct-course` task.  
-**Used By**: Orchestrator persona during change management and all personas during scope adjustments  
-**Frequency**: When significant changes, pivots, or issues are identified during development
+# Change Navigation Checklist
 
 **Instructions:** Review each item with the user. Mark `[x]` for completed/confirmed, `[N/A]` if not applicable, or add notes for discussion points.
 

@@ -1,8 +1,25 @@
-# Story Definition of Done (DoD) Checklist
+---
+type: checklist
+id: story-dod-checklist
+title: Story Definition of Done (DoD) Checklist
+purpose: Validate story completion and quality before marking as done during the `implement-story` task
+validates: Story implementation completion
+executed_by: Developer, QA Engineer, Orchestrator
+used_during: implement-story
+phase: implementation
+frequency: Before marking story as complete and ready for deployment
+categories:
+  - Requirements Met
+  - Coding Standards & Project Structure
+  - Testing
+  - Functionality & Verification
+  - Story Administration
+  - Dependencies, Build & Configuration
+  - Documentation
+  - Final Confirmation
+---
 
-**Purpose**: Validate story completion and quality before marking as done during the `implement-story` task.  
-**Used By**: Developer persona during implementation completion, QA Engineer for testing validation, and Orchestrator during quality gates  
-**Frequency**: Before marking story as complete and ready for deployment
+# Story Definition of Done (DoD) Checklist
 
 ## Instructions for Developer Agent:
 

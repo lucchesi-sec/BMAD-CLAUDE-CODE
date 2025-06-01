@@ -1,8 +1,25 @@
-# Test Suite Quality Checklist
+---
+type: checklist
+id: test-suite-quality-checklist
+title: Test Suite Quality Checklist
+purpose: Validate comprehensive test coverage and quality for the `generate-tests` task
+validates: Test suite coverage and quality
+executed_by: QA Engineer
+used_during: generate-tests
+phase: testing
+frequency: Before marking test suite complete
+categories:
+  - Test Coverage Standards
+  - Test Quality Standards
+  - Automated Testing Integration
+  - Security and Performance Testing
+  - Accessibility and Usability Testing
+  - Test Documentation and Reporting
+  - Deployment and Monitoring
+  - Final Validation
+---
 
-**Purpose**: Validate comprehensive test coverage and quality for the `generate-tests` task.  
-**Used By**: QA Engineer persona during test creation and validation  
-**Frequency**: Before marking test suite complete
+# Test Suite Quality Checklist
 
 ## Test Coverage Standards
 

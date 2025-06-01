@@ -1,8 +1,22 @@
-# Story Draft Checklist
+---
+type: checklist
+id: story-draft-checklist
+title: Story Draft Checklist
+purpose: Validate user story quality and implementation readiness for the `create-next-story` task
+validates: User story content and implementation readiness
+executed_by: Product Manager, Orchestrator
+used_during: create-next-story
+phase: discovery
+frequency: Before story is marked ready for development
+categories:
+  - Goal & Context Clarity
+  - Technical Implementation Guidance
+  - Reference Effectiveness
+  - Self-Containment Assessment
+  - Testing Guidance
+---
 
-**Purpose**: Validate user story quality and implementation readiness for the `create-next-story` task.  
-**Used By**: Product Manager persona during story creation and Orchestrator during quality gates  
-**Frequency**: Before story is marked ready for development
+# Story Draft Checklist
 
 The Product Manager persona should use this checklist to validate that each story contains sufficient context for a developer to implement it successfully, while assuming the developer has reasonable capabilities to figure things out.
 

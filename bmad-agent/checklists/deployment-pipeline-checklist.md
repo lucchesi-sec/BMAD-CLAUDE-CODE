@@ -1,8 +1,26 @@
-# Deployment Pipeline Quality Checklist
+---
+type: checklist
+id: deployment-pipeline-checklist
+title: Deployment Pipeline Quality Checklist
+purpose: Validate CI/CD pipeline setup and deployment automation for the `create-deployment-pipeline` task
+validates: CI/CD pipeline and deployment automation
+executed_by: DevOps Engineer
+used_during: create-deployment-pipeline
+phase: deployment
+frequency: Before pipeline goes live and after major changes
+categories:
+  - Pipeline Architecture and Strategy
+  - Build and Test Automation
+  - Security and Compliance
+  - Deployment and Release Management
+  - Performance and Reliability
+  - Monitoring and Observability
+  - Documentation and Knowledge Management
+  - Disaster Recovery and Business Continuity
+  - Final Validation
+---
 
-**Purpose**: Validate CI/CD pipeline setup and deployment automation for the `create-deployment-pipeline` task.  
-**Used By**: DevOps Engineer persona during infrastructure and deployment setup  
-**Frequency**: Before pipeline goes live and after major changes
+# Deployment Pipeline Quality Checklist
 
 ## Pipeline Architecture and Strategy
 

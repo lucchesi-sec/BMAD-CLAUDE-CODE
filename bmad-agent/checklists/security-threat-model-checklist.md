@@ -1,8 +1,25 @@
-# Security Threat Model Quality Checklist
+---
+type: checklist
+id: security-threat-model-checklist
+title: Security Threat Model Quality Checklist
+purpose: Validate comprehensive security analysis for the `security-threat-model` task
+validates: Security threat model and security architecture
+executed_by: Architect
+used_during: security-threat-model
+phase: design
+frequency: Before finalizing security architecture
+categories:
+  - Threat Identification Completeness
+  - Risk Assessment Quality
+  - Mitigation Strategy Effectiveness
+  - Implementation Feasibility
+  - Documentation Quality
+  - Validation and Testing
+  - Compliance and Governance
+  - Final Validation
+---
 
-**Purpose**: Validate comprehensive security analysis for the `security-threat-model` task.  
-**Used By**: Architect persona during security design  
-**Frequency**: Before finalizing security architecture
+# Security Threat Model Quality Checklist
 
 ## Threat Identification Completeness
 

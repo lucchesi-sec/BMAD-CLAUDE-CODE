@@ -1,3 +1,14 @@
+---
+type: template
+id: architecture-tmpl
+title: Architecture Design Template
+created_by: architect
+validates_with: [architect-checklist]
+phase: design
+used_in_tasks: [create-architecture]
+produces: architecture
+---
+
 # Architecture Design: [Project Name]
 
 ## Architecture Overview

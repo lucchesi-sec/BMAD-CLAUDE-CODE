@@ -1,8 +1,23 @@
-# Implementation Quality Checklist
+---
+type: checklist
+id: implementation-quality-checklist
+title: Implementation Quality Checklist
+purpose: Validate code implementation quality and architecture compliance during the `implement-story` task
+validates: Code implementation quality
+executed_by: Developer
+used_during: implement-story
+phase: implementation
+frequency: Before marking story implementation complete
+categories:
+  - Code Quality Standards
+  - Security Implementation
+  - Testing Integration
+  - Integration and Deployment
+  - Documentation and Knowledge Transfer
+  - Pre-Deployment Validation
+---
 
-**Purpose**: Validate code implementation quality and architecture compliance during the `implement-story` task.  
-**Used By**: Developer persona during story implementation  
-**Frequency**: Before marking story implementation complete
+# Implementation Quality Checklist
 
 ## Code Quality Standards
 

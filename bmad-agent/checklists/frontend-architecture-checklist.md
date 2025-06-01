@@ -1,8 +1,30 @@
-# Frontend Architecture Document Review Checklist
+---
+type: checklist
+id: frontend-architecture-checklist
+title: Frontend Architecture Document Review Checklist
+purpose: Validate frontend architecture design and UX specifications for frontend architecture tasks
+validates: Frontend architecture document
+executed_by: Architect, Designer
+used_during: create-frontend-architecture
+phase: design
+frequency: Before finalizing frontend architecture and transitioning to implementation
+categories:
+  - Introduction
+  - Overall Frontend Philosophy & Patterns
+  - Detailed Frontend Directory Structure
+  - Component Breakdown & Implementation Details
+  - State Management In-Depth
+  - API Interaction Layer
+  - Routing Strategy
+  - Build, Bundling, and Deployment
+  - Frontend Testing Strategy
+  - Accessibility (AX) Implementation Details
+  - Performance Considerations
+  - Change Log
+  - Final Review Sign-off
+---
 
-**Purpose**: Validate frontend architecture design and UX specifications for frontend architecture tasks.  
-**Used By**: Architect and Designer personas during frontend system design  
-**Frequency**: Before finalizing frontend architecture and transitioning to implementation
+# Frontend Architecture Document Review Checklist
 
 This checklist is for the Designer and Architect personas to use after completing frontend architecture design and populating the `front-end-architecture-tmpl.md` document. It ensures all sections are comprehensively covered and meet quality standards before finalization.
 

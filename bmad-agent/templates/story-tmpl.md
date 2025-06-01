@@ -1,3 +1,14 @@
+---
+type: template
+id: story-tmpl
+title: User Story Template
+created_by: pm
+validates_with: [story-draft-checklist]
+phase: implementation
+used_in_tasks: [create-next-story, implement-story]
+produces: story
+---
+
 # Story: [Story Title]
 
 **Story ID**: [PROJ-001]  

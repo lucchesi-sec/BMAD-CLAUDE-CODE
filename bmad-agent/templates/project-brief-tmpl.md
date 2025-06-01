@@ -1,3 +1,14 @@
+---
+type: template
+id: project-brief-tmpl
+title: Project Brief Template
+created_by: analyst
+validates_with: []
+phase: discovery
+used_in_tasks: [create-deep-research]
+produces: project-brief
+---
+
 # Project Brief: [Project Name]
 
 ## Vision Statement

@@ -1,3 +1,14 @@
+---
+type: template
+id: test-strategy-tmpl
+title: Test Strategy Template
+created_by: qa
+validates_with: [test-suite-quality-checklist]
+phase: testing
+used_in_tasks: [create-test-strategy]
+produces: test-strategy
+---
+
 # Test Strategy: [Project Name]
 
 ## Testing Philosophy

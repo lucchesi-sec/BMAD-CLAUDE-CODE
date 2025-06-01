@@ -1,8 +1,25 @@
-# Architect Solution Validation Checklist
+---
+type: checklist
+id: architect-checklist
+title: Architect Solution Validation Checklist
+purpose: Validate technical architecture design and completeness for the `create-architecture` task
+validates: Technical architecture document
+executed_by: Architect, Orchestrator
+used_during: create-architecture
+phase: design
+frequency: Before finalizing architecture and transitioning to implementation planning
+categories:
+  - Requirements Alignment
+  - Architecture Fundamentals
+  - Technical Stack & Decisions
+  - Resilience & Operational Readiness
+  - Security & Compliance
+  - Implementation Guidance
+  - Dependency & Integration Management
+  - AI Agent Implementation Suitability
+---
 
-**Purpose**: Validate technical architecture design and completeness for the `create-architecture` task.  
-**Used By**: Architect persona during system design and Orchestrator during quality gates  
-**Frequency**: Before finalizing architecture and transitioning to implementation planning
+# Architect Solution Validation Checklist
 
 This checklist serves as a comprehensive framework for the Architect to validate the technical design and architecture before development execution. The Architect should systematically work through each item, ensuring the architecture is robust, scalable, secure, and aligned with the product requirements.
 

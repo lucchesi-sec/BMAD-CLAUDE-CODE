@@ -1,8 +1,25 @@
-# Debug Process Quality Checklist
+---
+type: checklist
+id: debug-process-checklist
+title: Debug Process Quality Checklist
+purpose: Validate systematic debugging approach and resolution quality for the `debug-issue` task
+validates: Debugging process and issue resolution
+executed_by: Developer
+used_during: debug-issue
+phase: any
+frequency: Before marking debugging task complete
+categories:
+  - Issue Analysis and Reproduction
+  - Root Cause Analysis
+  - Solution Development and Testing
+  - Prevention and Improvement
+  - Communication and Documentation
+  - Quality Assurance and Follow-up
+  - Process Effectiveness
+  - Final Validation
+---
 
-**Purpose**: Validate systematic debugging approach and resolution quality for the `debug-issue` task.  
-**Used By**: Developer persona during issue investigation and resolution  
-**Frequency**: Before marking debugging task complete
+# Debug Process Quality Checklist
 
 ## Issue Analysis and Reproduction
 

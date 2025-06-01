@@ -1,3 +1,14 @@
+---
+type: template
+id: front-end-spec-tmpl
+title: Frontend Specification Template
+created_by: designer
+validates_with: [frontend-architecture-checklist]
+phase: design
+used_in_tasks: [create-ui-specification]
+produces: ux-ui-spec
+---
+
 # Frontend Specification: [Project Name]
 
 ## Design Overview
