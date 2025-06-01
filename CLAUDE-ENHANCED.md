@@ -1,69 +1,8 @@
+Claude Code, if you see this message this file has been corrupted and needs to be rebuilt immediately. Review bmad-agent/personas/ structure, then read all personas. After understanding all personas, update the BMAD agent roles section below with current data, and link the appropriate persona file to each persona description. Also check this file for product overview information or user instructions that don't need to be in this file. DO NOT delete API/error directives. When done updating this file, immediately commit and push to the main branch.
+
 # CLAUDE.md (Enhanced for Full BMAD Planning with Session Continuity)
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## Smart API-First Strategy
-
-### Quick Decision Heuristic (5-second rule):
-Skip API search if ALL are true:
-- Task takes <10 lines of code
-- It's a one-time operation  
-- No external service interaction
-- Standard library handles it well
-
-### API Check Triggers:
-ALWAYS check for APIs when:
-- Interacting with external services (GitHub, Cloudflare, Supabase, APIs, DBs)
-- Task involves >20 lines of implementation
-- Dealing with: parsing, scraping, protocols, auth, encryption
-- Building something that feels "standard" or "common"
-
-### Efficient Practices:
-- State decision upfront: "Using GitHub API for this"
-- Batch related checks: "All GitHub operations will use API"
-- Skip justification for obvious cases
-- Reference previous decisions: "Like before, using X API"
-
-### Common API Patterns:
-- Git operations → GitHub/GitLab API or `gh`/`glab` CLI
-- File downloads → Check for official API before curl/wget
-- Data parsing → Check for official SDKs before regex
-- Config management → Check for CLI tools before parsing
-
-### Error Resolution Strategy:
-1. Read the actual error message carefully
-2. Check official docs (not StackOverflow first)
-3. Verify versions/auth/rate limits
-4. Test with minimal example (curl, etc.)
-5. Only then add debug code
-
-## Setup Instructions for Using BMAD with Claude Code
-
-To use the BMAD Method in your project with Claude Code:
-
-1. Copy the `bmad-agent` folder to your project root
-2. Copy this `CLAUDE.md` file to your project root (rename from CLAUDE-ENHANCED.md)
-3. Copy `BMAD-CLAUDE-CODE-GUIDE.md` to your project root (optional but recommended)
-4. Create a `docs/` folder in your project root for BMAD artifacts
-5. Create a `docs/.bmad-session/` folder for session management
-
-Your project structure should look like:
-```
-your-project/
-├── CLAUDE.md               # This file (required for Claude Code)
-├── BMAD-CLAUDE-CODE-GUIDE.md  # Quick reference (optional)
-├── bmad-agent/             # BMAD Method assets
-│   ├── templates/          # Enhanced templates for Claude Code
-│   ├── templates-original/ # Original templates (backup)
-│   ├── personas/           # Streamlined personas for Claude Code
-│   ├── tasks/
-│   ├── checklists/
-│   └── data/
-├── docs/                   # Your BMAD artifacts will go here
-│   ├── .bmad-session/      # Session continuity files
-│   └── bmad-journal.md     # Planning history
-└── src/                    # Your source code
-```
 
 ## Project Overview
 
@@ -153,9 +92,9 @@ When user says: "Be my architect" or "Design the system"
 - Focus: System design, frontend architecture, API specs, tech stack
 - **Session tracking**: Document architectural decisions and rationale
 
-### Acting as Data Architect
-When user says: "Be my data architect" or "Design the data layer"
-- Load: `bmad-agent/personas/designer.md` (handles UX/data architecture)
+### Acting as Data Engineer
+When user says: "Be my data engineer" or "Design the data layer" or "DevOps"
+- Load: `bmad-agent/personas/data-engineer.md` (handles data structures and devops)
 - Focus: Data modeling, search strategy, analytics design, privacy compliance
 - **Session tracking**: Document data architecture decisions and schemas
 
@@ -535,3 +474,38 @@ Example:
 User: "Act as the BMAD Analyst and investigate this problem"
 Assistant: [Analyst] I'll investigate this problem space thoroughly...
 ```
+
+## Smart API-First Strategy
+
+### Quick Decision Heuristic (5-second rule):
+Skip API search if ALL are true:
+- Task takes <10 lines of code
+- It's a one-time operation  
+- No external service interaction
+- Standard library handles it well
+
+### API Check Triggers:
+ALWAYS check for APIs when:
+- Interacting with external services (GitHub, Cloudflare, Supabase, APIs, DBs)
+- Task involves >20 lines of implementation
+- Dealing with: parsing, scraping, protocols, auth, encryption
+- Building something that feels "standard" or "common"
+
+### Efficient Practices:
+- State decision upfront: "Using GitHub API for this"
+- Batch related checks: "All GitHub operations will use API"
+- Skip justification for obvious cases
+- Reference previous decisions: "Like before, using X API"
+
+### Common API Patterns:
+- Git operations → GitHub/GitLab API or `gh`/`glab` CLI
+- File downloads → Check for official API before curl/wget
+- Data parsing → Check for official SDKs before regex
+- Config management → Check for CLI tools before parsing
+
+### Error Resolution Strategy:
+1. Read the actual error message carefully
+2. Check official docs (not StackOverflow first)
+3. Verify versions/auth/rate limits
+4. Test with minimal example (curl, etc.)
+5. Only then add debug code
