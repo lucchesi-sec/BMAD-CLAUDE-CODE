@@ -183,16 +183,23 @@ download_directory() {
         local total_files=0
         local current_files=0
         declare -A dir_files
+        declare -A dir_total_files
         
+        # First pass: count all files per directory
         while IFS= read -r file_path; do
             # Files are already filtered by directory and are blobs only
             # Skip node_modules and other build artifacts
             if [[ "$file_path" != */node_modules/* ]] && [[ "$file_path" != */.next/* ]]; then
                 total_files=$((total_files + 1))
                 local file_dir=$(dirname "$file_path")
-                dir_files["$file_dir"]=$((${dir_files["$file_dir"]:-0} + 1))
+                # Normalize directory path (remove ./ prefix if present)
+                file_dir="${file_dir#./}"
+                dir_total_files["$file_dir"]=$((${dir_total_files["$file_dir"]:-0} + 1))
             fi
         done < "$temp_file"
+        
+        # Reset for second pass
+        seek 0 < "$temp_file" 2>/dev/null || true
         
         # Now download files with progress
         local current_dir=""
@@ -202,12 +209,15 @@ download_directory() {
         local color_index=0
         local colors=($DARK_ORANGE $CYAN)
         declare -A failed_files
+        declare -A dir_processed
         
         while IFS= read -r file_path; do
             # Files are already filtered by directory and are blobs only
             # Skip node_modules and other build artifacts
             if [[ "$file_path" != */node_modules/* ]] && [[ "$file_path" != */.next/* ]]; then
                 local file_dir=$(dirname "$file_path")
+                # Normalize directory path
+                file_dir="${file_dir#./}"
                 
                 # Check if we're entering a new directory
                 if [[ "$file_dir" != "$current_dir" ]]; then
@@ -222,10 +232,15 @@ download_directory() {
                     current_dir="$file_dir"
                     dir_current=0
                     dir_failed=0
-                    dir_file_count=${dir_files["$file_dir"]}
-                    echo -e "    ${CYAN}📦${NC} Creating: ${GRAY}${file_dir#./}/${NC}"
-                    # Move to next color in rotation
-                    color_index=$(( (color_index + 1) % ${#colors[@]} ))
+                    dir_file_count=${dir_total_files["$file_dir"]}
+                    
+                    # Only show directory creation once
+                    if [[ -z "${dir_processed["$file_dir"]}" ]]; then
+                        echo -e "    ${CYAN}📦${NC} Creating: ${GRAY}${file_dir}/${NC}"
+                        dir_processed["$file_dir"]=1
+                        # Move to next color in rotation
+                        color_index=$(( (color_index + 1) % ${#colors[@]} ))
+                    fi
                 fi
                 
                 # Download file silently
