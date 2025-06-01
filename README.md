@@ -1,4 +1,4 @@
-# BMAD-CLAUDE-CODE: The BMAD Method for Claude Code
+# Claude Code, now with BMADness
 **Into the unforgiving banality of software development we reflexively march, clutching our glowing API keys like torches against the impenetrable desolation of technical debt.** The BMAD Method - us mad be-ings expedition into the tarred ocean of AI-assisted creation - transforms the milquetoast ritual of "vibe coding" into misty charades evoking a mouth full of chalk and clandestine photographs. Nine specialized personas stand ready, a psychogeographical stonehenge coaxing us into treacherous mountain passes of token gathering, cataclismic tomfoolery, and the final commit: deploying a containerized singularity which compiled once last Thursday.
 
 Here, in this repository, lies our decrepit documentation of the journey - templates gesturing at meaning imposed upon the gaping void, workflows pretending the machine cares about our deadlines, and a methodology born from the quixotic dreams of script kiddies daring to believe AI could hypnotize the savage beast of framework debates.
