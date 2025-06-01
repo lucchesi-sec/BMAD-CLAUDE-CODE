@@ -15,7 +15,47 @@ produces: session-state
 **Date**: [Current date]  
 **Phase**: [Discovery/Design/Implementation/Testing/Deployment]
 
-## Current Context
+## BMAD Session Context
+
+### Active Persona
+**Current Persona**: [analyst|pm|architect|designer|developer|devops|qa|data-engineer|orchestrator]
+**Persona File**: `bmad-agent/personas/[persona].md`
+
+### Current Workflow
+**Active Task**: [create-prd|create-architecture|implement-story|etc.]
+**Task File**: `bmad-agent/tasks/[task].md`
+**Workflow Position**: [Brief description of where within the persona's process we stopped]
+
+### Pending Handoffs
+```yaml
+pending_handoffs:
+  - to: [target-persona]
+    context: "[Brief context for transition]"
+    deliverables: ["[artifact-1.md]", "[artifact-2.md]"]
+    next_action: "[recommended-task]"
+```
+
+### Multi-Persona Coordination
+**Coordination Mode**: [single-persona|multi-persona|orchestrated]
+**Feature Complexity**: [simple|complex|epic-level]
+
+```yaml
+coordination_state:
+  personas_involved: ["analyst", "pm", "architect"]
+  completed_contributions:
+    - persona: analyst
+      deliverable: "research-findings.md"
+      status: complete
+    - persona: pm
+      deliverable: "prd.md"
+      status: in-progress
+  blocked_dependencies: []
+  integration_points:
+    - description: "Architecture must align with PRD requirements"
+      status: pending
+```
+
+## Traditional Context
 
 ### What We're Working On
 [Brief description of current focus area]
