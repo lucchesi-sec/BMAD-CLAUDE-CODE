@@ -28,7 +28,7 @@ Here, in this repository, lies our decrepit documentation of the journey - templ
 
 ### Automated Setup (Recommended)
 
-Use our setup script to automatically configure BMAD in your project:
+Navigate to the root directory of your project and use the setup script to automatically configure BMAD:
 
 **macOS/Linux/WSL:**
 
