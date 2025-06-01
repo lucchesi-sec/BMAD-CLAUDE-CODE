@@ -183,9 +183,9 @@ download_directory() {
         local total_files=0
         local current_files=0
         declare -A dir_files
-        declare -A dir_total_files
+        declare -A dir_file_lists
         
-        # First pass: count all files per directory
+        # First pass: group all files by directory
         while IFS= read -r file_path; do
             # Files are already filtered by directory and are blobs only
             # Skip node_modules and other build artifacts
@@ -194,81 +194,68 @@ download_directory() {
                 local file_dir=$(dirname "$file_path")
                 # Normalize directory path (remove ./ prefix if present)
                 file_dir="${file_dir#./}"
-                dir_total_files["$file_dir"]=$((${dir_total_files["$file_dir"]:-0} + 1))
+                
+                # Append file to directory's file list
+                if [[ -z "${dir_file_lists["$file_dir"]}" ]]; then
+                    dir_file_lists["$file_dir"]="$file_path"
+                else
+                    dir_file_lists["$file_dir"]="${dir_file_lists["$file_dir"]}"$'\n'"$file_path"
+                fi
+                
+                # Count files per directory
+                dir_files["$file_dir"]=$((${dir_files["$file_dir"]:-0} + 1))
             fi
         done < "$temp_file"
         
-        # Reset for second pass
-        seek 0 < "$temp_file" 2>/dev/null || true
-        
-        # Now download files with progress
-        local current_dir=""
-        local dir_file_count=0
-        local dir_current=0
-        local dir_failed=0
+        # Now download files grouped by directory
         local color_index=0
         local colors=($DARK_ORANGE $CYAN)
         declare -A failed_files
-        declare -A dir_processed
         
-        while IFS= read -r file_path; do
-            # Files are already filtered by directory and are blobs only
-            # Skip node_modules and other build artifacts
-            if [[ "$file_path" != */node_modules/* ]] && [[ "$file_path" != */.next/* ]]; then
-                local file_dir=$(dirname "$file_path")
-                # Normalize directory path
-                file_dir="${file_dir#./}"
+        # Get sorted list of directories
+        local sorted_dirs=$(printf '%s\n' "${!dir_files[@]}" | sort)
+        
+        # Process each directory with all its files
+        while IFS= read -r dir; do
+            if [[ -n "$dir" && -n "${dir_file_lists["$dir"]}" ]]; then
+                echo -e "    ${CYAN}📦${NC} Creating: ${GRAY}${dir}/${NC}"
                 
-                # Check if we're entering a new directory
-                if [[ "$file_dir" != "$current_dir" ]]; then
-                    # Add newline if not the first directory
-                    if [[ -n "$current_dir" ]]; then
-                        echo ""  # Ensure previous progress bar line is complete
-                        # Show failed files if any
-                        if [[ $dir_failed -gt 0 ]]; then
-                            echo -e "      ${RED}⚠ Failed to download $dir_failed file(s)${NC}"
+                local dir_current=0
+                local dir_failed=0
+                local dir_file_count=${dir_files["$dir"]}
+                
+                # Process all files in this directory
+                while IFS= read -r file_path; do
+                    if [[ -n "$file_path" ]]; then
+                        # Download file silently
+                        if download_file_silent "$file_path"; then
+                            # Update progress only if download succeeded
+                            dir_current=$((dir_current + 1))
+                            current_files=$((current_files + 1))
+                        else
+                            # Track failed downloads
+                            dir_failed=$((dir_failed + 1))
+                            failed_files["$file_path"]=1
+                            # Debug: log which file failed  
+                            echo -e "\n      ${RED}⚠ Failed: $file_path${NC}" >&2
                         fi
+                        
+                        # Show progress bar for current directory with rotating colors
+                        local bar_color=${colors[$color_index]}
+                        show_progress_bar "$dir_current" "$dir_file_count" "      " "$bar_color"
                     fi
-                    current_dir="$file_dir"
-                    dir_current=0
-                    dir_failed=0
-                    dir_file_count=${dir_total_files["$file_dir"]}
-                    
-                    # Only show directory creation once
-                    if [[ -z "${dir_processed["$file_dir"]}" ]]; then
-                        echo -e "    ${CYAN}📦${NC} Creating: ${GRAY}${file_dir}/${NC}"
-                        dir_processed["$file_dir"]=1
-                        # Move to next color in rotation
-                        color_index=$(( (color_index + 1) % ${#colors[@]} ))
-                    fi
+                done <<< "${dir_file_lists["$dir"]}"
+                
+                # Ensure final newline and show failed count if any
+                echo ""
+                if [[ $dir_failed -gt 0 ]]; then
+                    echo -e "      ${RED}⚠ Failed to download $dir_failed file(s)${NC}"
                 fi
                 
-                # Download file silently
-                if download_file_silent "$file_path"; then
-                    # Update progress only if download succeeded
-                    dir_current=$((dir_current + 1))
-                    current_files=$((current_files + 1))
-                else
-                    # Track failed downloads
-                    dir_failed=$((dir_failed + 1))
-                    failed_files["$file_path"]=1
-                    # Debug: log which file failed  
-                    echo -e "\n      ${RED}⚠ Failed: $file_path${NC}" >&2
-                fi
-                
-                # Show progress bar for current directory with rotating colors
-                local bar_color=${colors[$color_index]}
-                show_progress_bar "$dir_current" "$dir_file_count" "      " "$bar_color"
+                # Move to next color in rotation
+                color_index=$(( (color_index + 1) % ${#colors[@]} ))
             fi
-        done < "$temp_file"
-        
-        # Ensure final progress bar has a newline and show final failed count
-        if [[ -n "$current_dir" ]]; then
-            echo ""
-            if [[ $dir_failed -gt 0 ]]; then
-                echo -e "      ${RED}⚠ Failed to download $dir_failed file(s)${NC}"
-            fi
-        fi
+        done <<< "$sorted_dirs"
         
         # Show total summary if there were any failures
         local total_failed=${#failed_files[@]}
