@@ -21,6 +21,8 @@ A comprehensive framework for professional software development with Claude Code
 
 ## Quick Start
 
+![Setup Script](media/setup-script.png)
+
 ### Automated Setup (Recommended)
 
 Use our setup script to automatically configure BMAD in your project:
@@ -69,6 +71,8 @@ your-project/
 ```
 
 ## BMAD Dashboard (Optional)
+
+![BMAD Dashboard](media/claude-bmad-dashboard.png)
 
 The BMAD Dashboard provides visual tracking of your project ideas:
 
