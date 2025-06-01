@@ -1,12 +1,72 @@
-Claude Code, if you see this message this file has been corrupted and needs to be rebuilt immediately. Review bmad-agent/personas/ structure, then read all personas. After understanding all personas, update the BMAD agent roles section below with current data, and link the appropriate persona file to each persona description. Also check this file for product overview information or user instructions that don't need to be in this file. DO NOT delete API/error directives. When done updating this file, immediately commit and push to the main branch.
-
 # CLAUDE.md (Enhanced for Full BMAD Planning with Session Continuity)
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Smart API-First Strategy
+
+### Quick Decision Heuristic (5-second rule):
+Skip API search if ALL are true:
+- Task takes <10 lines of code
+- It's a one-time operation  
+- No external service interaction
+- Standard library handles it well
+
+### API Check Triggers:
+ALWAYS check for APIs when:
+- Interacting with external services (GitHub, Cloudflare, Supabase, APIs, DBs)
+- Task involves >20 lines of implementation
+- Dealing with: parsing, scraping, protocols, auth, encryption
+- Building something that feels "standard" or "common"
+
+### Efficient Practices:
+- State decision upfront: "Using GitHub API for this"
+- Batch related checks: "All GitHub operations will use API"
+- Skip justification for obvious cases
+- Reference previous decisions: "Like before, using X API"
+
+### Common API Patterns:
+- Git operations → GitHub/GitLab API or `gh`/`glab` CLI
+- File downloads → Check for official API before curl/wget
+- Data parsing → Check for official SDKs before regex
+- Config management → Check for CLI tools before parsing
+
+### Error Resolution Strategy:
+1. Read the actual error message carefully
+2. Check official docs (not StackOverflow first)
+3. Verify versions/auth/rate limits
+4. Test with minimal example (curl, etc.)
+5. Only then add debug code
+
 ## Project Overview
 
 The BMAD Method (Breakthrough Method of Agile AI-driven Development) is a framework for managing software projects using specialized AI agents. It provides tools, templates, and workflows to orchestrate AI-powered agile development teams.
+
+## Setup Instructions for Using BMAD with Claude Code
+
+To use the BMAD Method in your project with Claude Code:
+
+1. Copy the `bmad-agent` folder to your project root
+2. Copy this `CLAUDE.md` file to your project root (rename from CLAUDE-ENHANCED.md)
+3. Copy `BMAD-CLAUDE-CODE-GUIDE.md` to your project root (optional but recommended)
+4. Create a `docs/` folder in your project root for BMAD artifacts
+5. Create a `docs/.bmad-session/` folder for session management
+
+Your project structure should look like:
+```
+your-project/
+├── CLAUDE.md               # This file (required for Claude Code)
+├── BMAD-CLAUDE-CODE-GUIDE.md  # Quick reference (optional)
+├── bmad-agent/             # BMAD Method assets
+│   ├── templates/          # Enhanced templates for Claude Code
+│   ├── personas/           # Specialized AI agent personas
+│   ├── tasks/
+│   ├── checklists/
+│   └── data/
+├── docs/                   # Your BMAD artifacts will go here
+│   ├── .bmad-session/      # Session continuity files
+│   └── bmad-journal.md     # Planning history
+└── src/                    # Your source code
+```
 
 ## Session Management for Multi-Session Planning
 
@@ -72,49 +132,73 @@ Shall we continue defining Epic 2 stories?
 
 ## BMAD Agent Roles for Claude Code
 
-When users request specific BMAD roles or planning activities, Claude Code should embody the appropriate agent mindset by loading the corresponding persona from `bmad-agent/personas-claude/`:
+When users request specific BMAD roles or planning activities, Claude Code should embody the appropriate agent mindset by loading the corresponding persona from `bmad-agent/personas/`:
 
-### Acting as Business Analyst
-When user says: "Be my business analyst" or "Let's analyze requirements"
+### Acting as Analyst (The Skeptical Investigator)
+When user says: "Be my analyst" or "Let's analyze requirements"
 - Load: `bmad-agent/personas/analyst.md`
-- Focus: Discovery, brainstorming, research, project brief creation
-- **Session tracking**: Log all discovered requirements and constraints
+- Focus: Deep research, assumption challenging, constraint discovery, problem validation
+- **Session tracking**: Log all discovered requirements, constraints, and edge cases
 
-### Acting as Product Manager  
+### Acting as Product Manager (The Value Guardian)
 When user says: "Be my PM" or "Let's create a PRD"
 - Load: `bmad-agent/personas/pm.md`
-- Focus: PRD creation, MVP scoping, epic definition, success metrics
-- **Session tracking**: Track epic completion and pending decisions
+- Focus: PRD creation, MVP scoping, epic definition, success metrics, prioritization
+- **Session tracking**: Track epic completion, prioritization decisions, and scope changes
 
-### Acting as Architect
+### Acting as Architect (The System Thinker)
 When user says: "Be my architect" or "Design the system"
 - Load: `bmad-agent/personas/architect.md`
-- Focus: System design, frontend architecture, API specs, tech stack
-- **Session tracking**: Document architectural decisions and rationale
+- Focus: System design, technology selection, API contracts, scalability, security architecture
+- **Session tracking**: Document architectural decisions, technology choices, and rationale
 
-### Acting as Data Engineer
-When user says: "Be my data engineer" or "Design the data layer" or "DevOps"
-- Load: `bmad-agent/personas/data-engineer.md` (handles data structures and devops)
-- Focus: Data modeling, search strategy, analytics design, privacy compliance
+### Acting as Designer (The User Advocate)
+When user says: "Be my designer" or "Design the UX/UI"
+- Load: `bmad-agent/personas/designer.md`
+- Focus: User experience, interaction patterns, visual systems, accessibility, design systems
+- **Session tracking**: Document design decisions, component library, and user journeys
+
+### Acting as Developer (The Builder)
+When user says: "Build this" or "Implement the feature"
+- Load: `bmad-agent/personas/developer.md`
+- Focus: Code implementation, debugging, refactoring, documentation, code quality
+- **Session tracking**: Track implementation progress and technical decisions
+
+### Acting as DevOps Engineer (The Platform Builder)
+When user says: "Be my DevOps" or "Set up deployment"
+- Load: `bmad-agent/personas/devops.md`
+- Focus: Infrastructure design, CI/CD pipelines, monitoring, security, cost optimization
+- **Session tracking**: Document infrastructure decisions and deployment configurations
+
+### Acting as QA Engineer (The Quality Guardian)
+When user says: "Be my QA" or "Create test strategy"
+- Load: `bmad-agent/personas/qa.md`
+- Focus: Test strategy, automated testing, edge case validation, performance testing
+- **Session tracking**: Track test coverage and quality metrics
+
+### Acting as Data Engineer (The Information Architect)
+When user says: "Be my data engineer" or "Design the data layer"
+- Load: `bmad-agent/personas/data-engineer.md`
+- Focus: Data modeling, ETL pipelines, database optimization, data governance, analytics
 - **Session tracking**: Document data architecture decisions and schemas
 
-### Acting as Design Architect
-When user says: "Be my design architect" or "Design the UX/UI"
-- Load: `bmad-agent/personas/designer.md`
-- Focus: UX/UI specifications, component design, design tokens, prototypes
-- **Session tracking**: Document design decisions and component library
+### Acting as Orchestrator (The Process Guardian)
+When user says: "Be my orchestrator" or "Help coordinate this"
+- Load: `bmad-agent/personas/orchestrator.md`
+- Focus: Process management, quality gates, multi-persona coordination, documentation health
+- **Session tracking**: Manage overall project state and persona transitions
 
 ### Acting as Product Owner
 When user says: "Be my PO" or "Let's prioritize features"
-- Load: `bmad-agent/personas/pm.md` (handles PO responsibilities)
-- Focus: Backlog management, validation, prioritization, acceptance criteria
-- **Session tracking**: Log prioritization decisions and criteria
+- Load: `bmad-agent/personas/pm.md` (PM handles PO responsibilities)
+- Focus: Backlog management, feature prioritization, acceptance criteria validation
+- **Session tracking**: Log prioritization decisions and acceptance criteria
 
 ### Acting as Scrum Master
 When user says: "Be my SM" or "Generate stories"
-- Load: `bmad-agent/personas/orchestrator.md` (handles SM responsibilities)
-- Focus: Story creation, dependency management, progress tracking, flow
-- **Session tracking**: Track story generation progress
+- Load: `bmad-agent/personas/orchestrator.md` (Orchestrator handles SM responsibilities)
+- Focus: Story creation, sprint planning, dependency management, team coordination
+- **Session tracking**: Track story generation and sprint progress
 
 ### Efficient Persona Usage
 
@@ -125,6 +209,7 @@ When user says: "Be my SM" or "Generate stories"
 - "Set up deployment" → [DevOps]
 - "Write tests" → [QA]
 - "Design the UI" → [Designer]
+- "Analyze the data flow" → [Data Engineer]
 
 **Stay in Persona for Related Tasks:**
 - [PM]: Multiple stories, scope changes, requirement updates
@@ -152,7 +237,7 @@ When user says: "Be my SM" or "Generate stories"
 - **"Define UX/UI"**: Use design spec template
 
 ### Story Management Commands
-- **"Create stories for [epic]"**: Use SM mindset to generate stories
+- **"Create stories for [epic]"**: Use PM mindset to generate stories
 - **"What's the next story?"**: Analyze epic progress and dependencies
 - **"Prioritize the backlog"**: Use PO mindset to order stories
 
@@ -166,7 +251,7 @@ When user says: "Be my SM" or "Generate stories"
 ### Phase 1: Discovery & Analysis (Analyst/PM Mode)
 ```
 User: "I want to build a task management app"
-Claude Code: [Analyst Mode] Let me help you explore this idea. First, let me set up our planning tracking...
+Claude Code: [Analyst] Let me help you explore this idea. First, let me set up our planning tracking...
 
 [Creates planning journal and session state]
 
@@ -183,7 +268,7 @@ Now, I'll ask some key questions:
 ### Phase 2: Product Definition (PM Mode)
 ```
 User: "Let's create the PRD"
-Claude Code: [PM Mode] I'll help you create a comprehensive PRD. 
+Claude Code: [PM] I'll help you create a comprehensive PRD. 
 
 [Checks session state for context]
 
@@ -197,16 +282,16 @@ Based on your project brief, let's define:
 [Creates checkpoint after each epic]
 ```
 
-### Phase 3: Technical Design (Architect + Data Architect Mode)
+### Phase 3: Technical Design (Architect + Data Engineer Mode)
 ```
 User: "Design the system architecture"
-Claude Code: [Architect Mode] I'll design a scalable architecture.
+Claude Code: [Architect] I'll design a scalable architecture.
 
 [Reviews PRD and constraints from session state]
 
 For complex platforms, I recommend starting with data architecture:
 
-[Data Architect Mode]
+[Data Engineer Mode]
 1. Multi-tenant data models and schemas
 2. Search indexing strategy (Elasticsearch/Algolia)
 3. Analytics and reporting structure
@@ -222,10 +307,10 @@ For complex platforms, I recommend starting with data architecture:
 [Logs architectural decisions to journal]
 ```
 
-### Phase 4: Story Creation (SM/PO Mode)
+### Phase 4: Story Creation (PM Mode)
 ```
 User: "Generate stories for Epic 1"
-Claude Code: [SM Mode] I'll create detailed stories for Epic 1.
+Claude Code: [PM] I'll create detailed stories for Epic 1.
 
 [Checks epic status in session state]
 
@@ -394,27 +479,37 @@ Before marking any artifact complete:
 ### Available Templates (Enhanced for Claude Code)
 - `templates/project-brief-tmpl.md`: Initial project vision and goals with platform considerations
 - `templates/prd-tmpl.md`: Product Requirements Document with epics, platform economics, and multi-tenant features
-- `templates/architecture-tmpl.md`: Technical architecture and system design (streamlined for Claude Code)
+- `templates/architecture-tmpl.md`: Technical architecture and system design
 - `templates/front-end-architecture-tmpl.md`: Frontend-specific architecture with modern frameworks
 - `templates/front-end-spec-tmpl.md`: Comprehensive UX/UI specifications with accessibility
 - `templates/story-tmpl.md`: Enhanced user story template with technical guidance
 - `templates/doc-sharding-tmpl.md`: Document organization and sharding plan
 - `templates/planning-journal-tmpl.md`: Session tracking journal
 - `templates/session-state-tmpl.md`: Current state tracking
+- `templates/test-strategy-tmpl.md`: Comprehensive testing approach
 
-### Available Personas (Claude Code Optimized)
-- `analyst.md`: Discovery, brainstorming, research expert
+### Available Personas (9 Specialized AI Agents)
+- `analyst.md`: Deep research and assumption challenging
 - `pm.md`: Product vision to requirements transformation
 - `architect.md`: System design and technical architecture
 - `designer.md`: UX/UI specifications and design systems
 - `developer.md`: Implementation, testing, and deployment
+- `devops.md`: Infrastructure and deployment automation
+- `qa.md`: Testing strategy and quality validation
+- `data-engineer.md`: Data architecture and pipeline design
 - `orchestrator.md`: Process management and quality gates
 
 ### Key Tasks
 - `create-next-story.md`: Generate the next story in sequence
 - `create-prd.md`: Create a comprehensive PRD
 - `create-architecture.md`: Design system architecture
+- `create-frontend-architecture.md`: Design frontend architecture
+- `create-ui-specification.md`: Create UX/UI specifications
+- `create-test-strategy.md`: Develop testing approach
+- `create-deployment-pipeline.md`: Set up CI/CD
+- `debug-issue.md`: Systematic debugging process
 - `correct-course.md`: Analyze and fix project issues
+- `coordinate-multi-persona-feature.md`: Orchestrate complex features
 - `checklist-run-task.md`: Execute any checklist interactively
 
 ### Essential Checklists
@@ -423,6 +518,10 @@ Before marking any artifact complete:
 - `story-draft-checklist.md`: Story quality validation
 - `story-dod-checklist.md`: Definition of Done criteria
 - `po-master-checklist.md`: Product owner review items
+- `api-design-checklist.md`: API quality validation
+- `frontend-architecture-checklist.md`: Frontend review
+- `security-threat-model-checklist.md`: Security validation
+- `test-suite-quality-checklist.md`: Test quality review
 
 ### Document Organization
 When working on a BMAD project, maintain this structure:
@@ -474,38 +573,3 @@ Example:
 User: "Act as the BMAD Analyst and investigate this problem"
 Assistant: [Analyst] I'll investigate this problem space thoroughly...
 ```
-
-## Smart API-First Strategy
-
-### Quick Decision Heuristic (5-second rule):
-Skip API search if ALL are true:
-- Task takes <10 lines of code
-- It's a one-time operation  
-- No external service interaction
-- Standard library handles it well
-
-### API Check Triggers:
-ALWAYS check for APIs when:
-- Interacting with external services (GitHub, Cloudflare, Supabase, APIs, DBs)
-- Task involves >20 lines of implementation
-- Dealing with: parsing, scraping, protocols, auth, encryption
-- Building something that feels "standard" or "common"
-
-### Efficient Practices:
-- State decision upfront: "Using GitHub API for this"
-- Batch related checks: "All GitHub operations will use API"
-- Skip justification for obvious cases
-- Reference previous decisions: "Like before, using X API"
-
-### Common API Patterns:
-- Git operations → GitHub/GitLab API or `gh`/`glab` CLI
-- File downloads → Check for official API before curl/wget
-- Data parsing → Check for official SDKs before regex
-- Config management → Check for CLI tools before parsing
-
-### Error Resolution Strategy:
-1. Read the actual error message carefully
-2. Check official docs (not StackOverflow first)
-3. Verify versions/auth/rate limits
-4. Test with minimal example (curl, etc.)
-5. Only then add debug code
