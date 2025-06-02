@@ -60,10 +60,12 @@ your-project/
 ├── CLAUDE.md                      # Claude Code instructions
 ├── BMAD-CLAUDE-CODE-GUIDE.md     # Quick reference
 ├── bmad-agent/                   # BMAD assets
-│   ├── templates/                # Document templates
+│   ├── checklists/               # Quality checklists
+│   ├── data/                     # Knowledge base
+│   ├── guides/                   # Methodology and usage guides
+│   ├── personas/                 # Persona definitions
 │   ├── tasks/                    # Executable tasks
-│   ├── checklists/              # Quality checklists
-│   └── data/                    # Knowledge base
+│   └── templates/                # Document templates
 ├── docs/                        # Project artifacts
 │   ├── bmad-journal.md          # Planning history
 │   ├── .bmad-session/           # Session continuity
