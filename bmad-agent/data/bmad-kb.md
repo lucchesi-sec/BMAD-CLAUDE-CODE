@@ -318,12 +318,23 @@ npm run dev
 - **create-next-story.md**: User story creation
 - **create-deep-research.md**: Investigation and analysis
 
+### Design & Architecture Tasks
+
+- **create-api-specification.md**: API design and contracts
+- **create-frontend-architecture.md**: Frontend system design
+- **create-uxui-spec.md**: UI/UX design specifications
+- **create-database-design.md**: Database schema design
+- **security-threat-model.md**: Security analysis
+- **create-ai-frontend-prompt.md**: AI UI generation prompts
+
 ### Implementation Tasks
 
 - **implement-story.md**: Guided code implementation
 - **create-test-strategy.md**: Comprehensive testing approach
 - **generate-tests.md**: Test creation and automation
 - **debug-issue.md**: Systematic debugging approach
+- **create-deployment-pipeline.md**: CI/CD setup
+- **create-data-migration-strategy.md**: Data migration planning
 
 ### Process Tasks
 
@@ -331,6 +342,8 @@ npm run dev
 - **correct-course.md**: Change management
 - **core-dump.md**: Session memory capture
 - **checklist-run-task.md**: Quality gate execution
+- **doc-sharding-task.md**: Document organization and breakdown
+- **library-indexing-task.md**: Code library indexing and documentation
 
 ## Integration Guidelines
 
