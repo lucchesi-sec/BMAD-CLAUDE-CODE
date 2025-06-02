@@ -308,6 +308,7 @@ npm run dev
 - **test-strategy-tmpl.md**: Comprehensive testing approach
 - **session-state-tmpl.md**: Session continuity tracking
 - **planning-journal-tmpl.md**: Decision history across sessions
+- **doc-sharding-tmpl.md**: Documentation organization and breakdown structure
 
 ## Task Execution Framework
 
