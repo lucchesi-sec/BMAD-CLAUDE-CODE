@@ -5,15 +5,54 @@
 
 set -e  # Exit on error
 
-# Check bash version for associative array support
-check_bash_version() {
-    local bash_version
-    bash_version="${BASH_VERSION%%.*}"
+# Check bash version and auto-switch to Homebrew bash if needed
+check_and_switch_bash() {
+    local current_bash_version
+    current_bash_version="${BASH_VERSION%%.*}"
     
-    if [[ "$bash_version" -lt 4 ]]; then
-        echo -e "${RED}⚠️  Warning: Bash version $BASH_VERSION detected${NC}"
-        echo -e "${YELLOW}This script uses associative arrays which require Bash 4.0 or later.${NC}"
-        echo -e "${YELLOW}macOS ships with Bash 3.x by default.${NC}"
+    # If current bash is already 4.0+, we're good
+    if [[ "$current_bash_version" -ge 4 ]]; then
+        return 0
+    fi
+    
+    echo -e "${RED}⚠️  Bash version $BASH_VERSION detected (requires 4.0+)${NC}"
+    
+    # Check for Homebrew bash installations
+    local homebrew_bash_paths=(
+        "/opt/homebrew/bin/bash"  # Apple Silicon
+        "/usr/local/bin/bash"     # Intel Mac
+    )
+    
+    local found_bash=""
+    local found_version=""
+    
+    for bash_path in "${homebrew_bash_paths[@]}"; do
+        if [[ -x "$bash_path" ]]; then
+            # Get version of this bash
+            local version_output
+            version_output=$("$bash_path" --version 2>/dev/null | head -n1)
+            local version_num
+            version_num=$(echo "$version_output" | grep -oE '[0-9]+\.[0-9]+' | head -n1)
+            local major_version
+            major_version="${version_num%%.*}"
+            
+            if [[ "$major_version" -ge 4 ]]; then
+                found_bash="$bash_path"
+                found_version="$version_num"
+                break
+            fi
+        fi
+    done
+    
+    if [[ -n "$found_bash" ]]; then
+        echo -e "${GREEN}✓ Found compatible bash $found_version at $found_bash${NC}"
+        echo -e "${CYAN}Automatically switching to Homebrew bash...${NC}"
+        echo ""
+        
+        # Re-execute script with the compatible bash
+        exec "$found_bash" "$0" "$@"
+    else
+        echo -e "${YELLOW}No compatible Homebrew bash found.${NC}"
         echo ""
         echo -e "${CYAN}To fix this issue:${NC}"
         echo "1. Install Homebrew if you haven't already:"
@@ -22,16 +61,15 @@ check_bash_version() {
         echo "2. Install modern bash:"
         echo "   brew install bash"
         echo ""
-        echo "3. Run this script with Homebrew's bash:"
-        echo "   /opt/homebrew/bin/bash $(basename "$0")"
+        echo "3. Re-run this script (it will auto-detect the new bash)"
         echo ""
         echo -e "${GRAY}Press Enter to continue anyway (may cause errors) or Ctrl+C to exit${NC}"
         read -r
     fi
 }
 
-# Run bash version check
-check_bash_version
+# Run bash version check and auto-switch if needed
+check_and_switch_bash "$@"
 
 # Claude Code Theme Color Palette
 ORANGE='\033[38;2;244;132;95m'       # Claude orange #F4845F
