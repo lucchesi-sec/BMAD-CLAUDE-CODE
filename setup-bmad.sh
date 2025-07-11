@@ -5,6 +5,34 @@
 
 set -e  # Exit on error
 
+# Check bash version for associative array support
+check_bash_version() {
+    local bash_version
+    bash_version="${BASH_VERSION%%.*}"
+    
+    if [[ "$bash_version" -lt 4 ]]; then
+        echo -e "${RED}⚠️  Warning: Bash version $BASH_VERSION detected${NC}"
+        echo -e "${YELLOW}This script uses associative arrays which require Bash 4.0 or later.${NC}"
+        echo -e "${YELLOW}macOS ships with Bash 3.x by default.${NC}"
+        echo ""
+        echo -e "${CYAN}To fix this issue:${NC}"
+        echo "1. Install Homebrew if you haven't already:"
+        echo "   /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+        echo ""
+        echo "2. Install modern bash:"
+        echo "   brew install bash"
+        echo ""
+        echo "3. Run this script with Homebrew's bash:"
+        echo "   /opt/homebrew/bin/bash $(basename "$0")"
+        echo ""
+        echo -e "${GRAY}Press Enter to continue anyway (may cause errors) or Ctrl+C to exit${NC}"
+        read -r
+    fi
+}
+
+# Run bash version check
+check_bash_version
+
 # Claude Code Theme Color Palette
 ORANGE='\033[38;2;244;132;95m'       # Claude orange #F4845F
 BRIGHT_ORANGE='\033[1;38;2;244;132;95m'  # Bright Claude orange
